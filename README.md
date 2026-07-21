@@ -33,7 +33,7 @@ Harmless on other backends (DXVK, Windows) — the result is visually identical.
 
 ## Installation
 
-r2modman: **Settings → Import local mod** → select the release zip.
+**Thunderstore (recommended):** install [appxpy/DSPSwarmDrawFix](https://thunderstore.io/c/dyson-sphere-program/p/appxpy/DSPSwarmDrawFix/) via r2modman — search for `DSPSwarmDrawFix` in the online mod list.
 
 Manual: drop `DSPSwarmDrawFix.dll` into `BepInEx/plugins/`.
 

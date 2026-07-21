@@ -23,6 +23,12 @@ the mod logs an error and falls back to the vanilla draw path instead of breakin
 
 Harmless on other backends (DXVK/Windows) — it renders identically.
 
+## Installation
+
+Install via r2modman/Thunderstore Mod Manager, or drop `DSPSwarmDrawFix.dll` into `BepInEx/plugins/`.
+
+Source: https://github.com/appxpy/DSPSwarmMac
+
 ## Changelog
 
 - 1.0.0 — initial release
