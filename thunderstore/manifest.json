@@ -1,7 +1,7 @@
 {
   "name": "DSPSwarmDrawFix",
   "version_number": "1.0.0",
-  "website_url": "https://github.com/",
+  "website_url": "https://github.com/appxpy/DSPSwarmMac",
   "description": "Fixes invisible Dyson Swarm sails on macOS (CrossOver/D3DMetal) by chunked indexed-triangle rendering",
   "dependencies": [
     "xiaoye97-BepInEx-5.4.17"
