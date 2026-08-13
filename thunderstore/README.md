@@ -3,25 +3,26 @@
 Fixes the invisible Dyson Swarm when playing Dyson Sphere Program on macOS
 via CrossOver with the D3DMetal graphics backend.
 
-## The bug
+Without the mod the swarm's solar sails just don't render, while the rest of the
+game looks fine. With it, the swarm shows up as it should.
 
-The game draws far solar sails with a single
-`Graphics.DrawProceduralNow(MeshTopology.Quads, sailCount * 12)` call — hundreds of
-thousands of vertices in one draw. Direct3D 11 has no quad primitive, so Unity
-emulates quads with an internal index buffer, and D3DMetal silently drops this giant
-emulated draw call (small quad draws — sail bullets, power lines, warning icons —
-work fine, which is why only the swarm disappears).
+Harmless on other backends (DXVK/Windows) — it renders identically there.
 
-## The fix
+If the mod ever fails (for example after a game update), it logs an error once and
+falls back to the game's own rendering instead of breaking anything.
 
-Same shader, same GPU buffers, but the draw is issued as indexed triangles in chunks
-of 5460 sails (65,520 vertices, under the 16-bit index limit), using the shader's own
-instancing support (`sailIndex = SV_InstanceID * _Stride + SV_VertexID / 12`).
+## Settings
 
-If the replacement ever fails (e.g. after a game update changes `DysonSwarm.DrawPost`),
-the mod logs an error and falls back to the vanilla draw path instead of breaking the game.
+`Rendering / NearSails` — how to draw sails you get close to, which the game renders
+as a solid mesh rather than a flat sprite.
 
-Harmless on other backends (DXVK/Windows) — it renders identically.
+- `Auto` (default) — draw them when you're actually near the swarm
+- `Off` — never draw them; sails stay flat up close
+- `Always` — always draw them; costs a lot of frame rate on a large swarm
+
+Leave this on `Auto` unless you have a reason not to.
+
+**On 1.1.0 and your frame rate fell as the swarm grew? That's this setting — update.**
 
 ## Installation
 
@@ -31,4 +32,6 @@ Source: https://github.com/appxpy/DSPSwarmMac
 
 ## Changelog
 
+- 1.2.0 — fix a large frame rate drop on big swarms introduced in 1.1.0; add the `NearSails` setting
+- 1.1.0 — fix near sails as well
 - 1.0.0 — initial release

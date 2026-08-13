@@ -3,33 +3,26 @@
 Fixes the invisible Dyson Swarm when playing **Dyson Sphere Program** on macOS
 via CrossOver/Wine with the **D3DMetal** graphics backend.
 
-## The bug
+Without the mod the swarm's solar sails are simply not rendered, while everything
+else in the game looks fine. With it, the swarm shows up as it should.
 
-The game draws far solar sails with a single
-`Graphics.DrawProceduralNow(MeshTopology.Quads, sailCount * 12)` call — hundreds of
-thousands of vertices in one draw. Direct3D 11 has no quad primitive, so Unity
-emulates quads with an internal index buffer, and D3DMetal silently drops this giant
-emulated draw call. Small quad draws (sail bullets, power lines, warning icons) work
-fine — which is why only the swarm disappears while everything else renders.
+Harmless on other backends (DXVK, Windows) — it renders identically there.
 
-DXVK handles the same draw correctly, so the swarm is visible there — but DXVK on
-macOS is typically much slower than D3DMetal.
+If the mod ever fails (for example after a game update), it logs an error once and
+falls back to the game's own rendering instead of breaking anything.
 
-## The fix
+## Settings
 
-Same shader, same GPU buffers, but the draw is issued as **indexed triangles in
-chunks of 5460 sails** (65,520 vertices, under the 16-bit index limit), using the
-shader's own instancing support:
+`Rendering / NearSails` — how to draw sails you get close to, which the game renders
+as a solid mesh rather than a flat sprite.
 
-```
-sailIndex = SV_InstanceID * _Stride + SV_VertexID / 12
-```
+| Value | Behaviour |
+|---|---|
+| `Auto` (default) | Draw them when you're actually near the swarm |
+| `Off` | Never draw them; sails stay flat up close |
+| `Always` | Always draw them — costs a lot of frame rate on a large swarm |
 
-A Harmony prefix on `DysonSwarm.DrawPost` replaces the vanilla draw. If the
-replacement ever throws (e.g. a game update changes `DrawPost`), the mod logs an
-error once and falls back to the vanilla path instead of breaking the game.
-
-Harmless on other backends (DXVK, Windows) — the result is visually identical.
+Leave this on `Auto` unless you have a reason not to.
 
 ## Installation
 
